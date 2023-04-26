@@ -9,6 +9,7 @@ public enum RoleAuthorities {
     REMOVE_CHANNEL,
     REMOVE_SERVER,
     ADD_ROLE,
+    ASSIGN_ROLE,
     REMOVE_ROLE,
     CHANGE_INVITE_ID
 }

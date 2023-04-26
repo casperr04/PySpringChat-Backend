@@ -24,6 +24,13 @@ public class ServerEntity extends BaseEntity {
     @ToString.Exclude
     private Set<ServerChannelEntity> channels;
 
+    @Length(min = 3, max = 32)
+    @NotBlank
+    private String serverName;
+
+    @Length(max = 255)
+    private String serverDescription;
+
     @ManyToMany
     @JoinTable(
             name = "server_users",
@@ -37,11 +44,6 @@ public class ServerEntity extends BaseEntity {
     @NotBlank
     @Column(unique = true)
     private String inviteId;
-
-    @Length(min = 12, max = 12)
-    @NotBlank
-    @Column(unique = true)
-    private String publicServerId;
 
     @PastOrPresent
     @CreationTimestamp

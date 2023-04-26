@@ -1,19 +1,20 @@
 package com.casperr04.pyspringchatbackend.model.entity;
 
+import com.casperr04.pyspringchatbackend.model.entity.enums.UserRoles;
 import com.casperr04.pyspringchatbackend.model.entity.superclasses.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -21,6 +22,9 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity extends BaseEntity implements UserDetails {
 
     @NotBlank
@@ -29,11 +33,6 @@ public class UserEntity extends BaseEntity implements UserDetails {
 
     @NotBlank
     private String encryptedPassword;
-
-    @Length(min = 12, max = 12)
-    @NotBlank
-    @Column(unique = true)
-    private String publicUserId;
 
     @ManyToMany
     @JoinTable(
@@ -60,10 +59,16 @@ public class UserEntity extends BaseEntity implements UserDetails {
 
     private boolean isBanned = false;
 
+    @Enumerated(EnumType.STRING)
+    private UserRoles role;
+
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    private Set<AuthToken> tokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
@@ -92,7 +97,5 @@ public class UserEntity extends BaseEntity implements UserDetails {
     }
 
     @Override
-    public boolean isEnabled() {
-        return isBanned();
-    }
+    public boolean isEnabled() {return !isBanned();}
 }
