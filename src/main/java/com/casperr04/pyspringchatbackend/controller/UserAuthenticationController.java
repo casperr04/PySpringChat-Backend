@@ -6,7 +6,6 @@ import com.casperr04.pyspringchatbackend.model.dto.UserLoginDto;
 import com.casperr04.pyspringchatbackend.model.dto.UserRegisterDto;
 import com.casperr04.pyspringchatbackend.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,11 +25,10 @@ public class UserAuthenticationController {
         try {
             returnDto = userService.registerUser(registerDto);
         } catch (RuntimeException runtimeException) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            return ResponseEntity.badRequest()
                     .body(new ExceptionResponseModel(runtimeException.getMessage(), Instant.now()));
         }
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(returnDto);
+        return ResponseEntity.ok(returnDto);
     }
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody UserLoginDto userLoginDto) {
@@ -38,10 +36,9 @@ public class UserAuthenticationController {
         try {
             returnDto = userService.authenticate(userLoginDto);
         } catch (RuntimeException runtimeException) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            return ResponseEntity.badRequest()
                     .body(new ExceptionResponseModel(runtimeException.getMessage(), Instant.now()));
         }
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(returnDto);
+        return ResponseEntity.ok(returnDto);
     }
 }

@@ -5,7 +5,6 @@ import com.casperr04.pyspringchatbackend.model.dto.ExceptionResponseModel;
 import com.casperr04.pyspringchatbackend.model.dto.UserPublicDto;
 import com.casperr04.pyspringchatbackend.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,11 +28,10 @@ public class UserPublicController {
         try {
             returnDto = userService.receiveUserInfo(id);
         } catch (RuntimeException runtimeException) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            return ResponseEntity.badRequest()
                     .body(new ExceptionResponseModel(runtimeException.getMessage(), Instant.now()));
         }
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(returnDto);
+        return ResponseEntity.ok(returnDto);
     }
 
     @GetMapping("/name/{username}")
@@ -42,10 +40,9 @@ public class UserPublicController {
         try {
             returnDto = userService.receiveUserInfo(username);
         } catch (RuntimeException runtimeException) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            return ResponseEntity.badRequest()
                     .body(new ExceptionResponseModel(runtimeException.getMessage(), Instant.now()));
         }
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(returnDto);
+        return ResponseEntity.ok(returnDto);
     }
 }
