@@ -32,7 +32,7 @@ public class UserPublicController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ExceptionResponseModel(runtimeException.getMessage(), Instant.now()));
         }
-        return ResponseEntity.status(HttpStatus.FOUND)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(returnDto);
     }
 
@@ -45,7 +45,7 @@ public class UserPublicController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ExceptionResponseModel(runtimeException.getMessage(), Instant.now()));
         }
-        return ResponseEntity.status(HttpStatus.FOUND)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(returnDto);
     }
 }
