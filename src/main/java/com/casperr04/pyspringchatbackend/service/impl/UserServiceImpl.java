@@ -2,6 +2,7 @@ package com.casperr04.pyspringchatbackend.service.impl;
 
 import com.casperr04.pyspringchatbackend.model.dto.AuthResponse;
 import com.casperr04.pyspringchatbackend.model.dto.UserLoginDto;
+import com.casperr04.pyspringchatbackend.model.dto.UserPublicDto;
 import com.casperr04.pyspringchatbackend.model.dto.UserRegisterDto;
 import com.casperr04.pyspringchatbackend.model.entity.AuthToken;
 import com.casperr04.pyspringchatbackend.model.entity.UserEntity;
@@ -38,6 +39,7 @@ public class UserServiceImpl implements UserService {
                 .encryptedPassword(passwordEncoder.encode(userRegisterDto.getPassword()))
                 .role(UserRoles.USER)
                 .build();
+        userRepository.save(user);
         AuthToken authToken = bearerTokenService.generateToken(user);
         authTokenRepository.save(authToken);
         return AuthResponse.builder()
@@ -67,6 +69,36 @@ public class UserServiceImpl implements UserService {
                 .dateOfCreation(user.getCreationDate())
                 .username(userLoginDto.getUsername())
                 .token(token.getToken())
+                .build();
+    }
+
+    @Override
+    public UserPublicDto receiveUserInfo(Long id) {
+        if (id == null){
+            throw new RuntimeException("Missing ID in request");
+        }
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return UserPublicDto.builder()
+                .Id(user.getId())
+                .dateOfCreation(user.getCreationDate())
+                .name(user.getUsername())
+                .build();
+    }
+
+    @Override
+    public UserPublicDto receiveUserInfo(String username) {
+        if (username == null || username.isBlank()){
+            throw new RuntimeException("Missing username in request");
+        }
+        UserEntity user = userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return UserPublicDto.builder()
+                .Id(user.getId())
+                .dateOfCreation(user.getCreationDate())
+                .name(user.getUsername())
                 .build();
     }
 }
