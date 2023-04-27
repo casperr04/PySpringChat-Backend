@@ -39,36 +39,41 @@ public class UserServiceImpl implements UserService {
                 .encryptedPassword(passwordEncoder.encode(userRegisterDto.getPassword()))
                 .role(UserRoles.USER)
                 .build();
-        userRepository.save(user);
+        UserEntity savedUser = userRepository.save(user);
+
         AuthToken authToken = bearerTokenService.generateToken(user);
-        authTokenRepository.save(authToken);
+
         return AuthResponse.builder()
                 .username(userRegisterDto.getUsername())
-                .id(userRepository
-                        .findUserByUsername(userRegisterDto.getUsername()).get().getId())
-                .dateOfCreation(userRepository
-                        .findUserByUsername(userRegisterDto.getUsername()).get().getCreationDate())
+                .id(savedUser.getId())
+                .accountDateOfCreation(savedUser.getCreationDate())
                 .token(authToken.getToken())
+                .tokenExpirationDate(authToken.getExpirationDate())
                 .build();
     }
 
     @Override
     public AuthResponse authenticate(UserLoginDto userLoginDto) {
+        // Will throw bad credentials exception if password or username is invalid
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         userLoginDto.getUsername(),
                         userLoginDto.getPassword()
                 )
         );
+
         UserEntity user = userRepository.findUserByUsername(userLoginDto.getUsername())
                 .orElseThrow(() -> new RuntimeException("No user found"));
-        AuthToken token = bearerTokenService.generateToken(user);
-        authTokenRepository.save(token);
+
+        AuthToken authToken = bearerTokenService.generateToken(user);
+        authTokenRepository.save(authToken);
+
         return AuthResponse.builder()
                 .id(user.getId())
-                .dateOfCreation(user.getCreationDate())
+                .accountDateOfCreation(user.getCreationDate())
                 .username(userLoginDto.getUsername())
-                .token(token.getToken())
+                .token(authToken.getToken())
+                .tokenExpirationDate(authToken.getExpirationDate())
                 .build();
     }
 
