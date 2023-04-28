@@ -20,11 +20,11 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-    private AuthenticationManager authenticationManager;
-    private BearerTokenService bearerTokenService;
-    private AuthTokenRepository authTokenRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final BearerTokenService bearerTokenService;
+    private final AuthTokenRepository authTokenRepository;
 
     public AuthResponse registerUser(UserRegisterDto userRegisterDto) throws RuntimeException {
         if (userRegisterDto.getUsername() == null || userRegisterDto.getUsername().isBlank()) {

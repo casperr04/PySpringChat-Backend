@@ -20,7 +20,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @RequestMapping("/v1/user/info")
 public class UserPublicController {
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping("/id/{id}")
     public ResponseEntity<?> getPublicUserInformationById(@PathVariable("id") Long id) {

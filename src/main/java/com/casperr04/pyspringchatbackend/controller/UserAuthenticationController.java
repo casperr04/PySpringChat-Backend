@@ -18,7 +18,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @RequestMapping("/v1/auth/")
 public class UserAuthenticationController {
-    private UserService userService;
+    private final UserService userService;
     @PostMapping("register")
     public ResponseEntity<?> register(@RequestBody UserRegisterDto registerDto) {
         AuthResponse returnDto;
