@@ -1,5 +1,6 @@
 package com.casperr04.pyspringchatbackend.service.impl;
 
+import com.casperr04.pyspringchatbackend.exception.MissingEntityException;
 import com.casperr04.pyspringchatbackend.model.dto.AuthResponse;
 import com.casperr04.pyspringchatbackend.model.dto.UserLoginDto;
 import com.casperr04.pyspringchatbackend.model.dto.UserPublicDto;
@@ -28,10 +29,10 @@ public class UserServiceImpl implements UserService {
 
     public AuthResponse registerUser(UserRegisterDto userRegisterDto) throws RuntimeException {
         if (userRegisterDto.getUsername() == null || userRegisterDto.getUsername().isBlank()) {
-            throw new RuntimeException("Username empty in request.");
+            throw new IllegalArgumentException("Username empty in request.");
         }
         if (userRepository.findUserByUsername(userRegisterDto.getUsername()).isPresent()) {
-            throw new RuntimeException("User already exists by username");
+            throw new IllegalArgumentException("User already exists by username");
         }
 
         UserEntity user = UserEntity.builder()
@@ -53,7 +54,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthResponse authenticate(UserLoginDto userLoginDto) {
+    public AuthResponse authenticate(UserLoginDto userLoginDto) throws MissingEntityException {
         // Will throw bad credentials exception if password or username is invalid
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -63,7 +64,7 @@ public class UserServiceImpl implements UserService {
         );
 
         UserEntity user = userRepository.findUserByUsername(userLoginDto.getUsername())
-                .orElseThrow(() -> new RuntimeException("No user found"));
+                .orElseThrow(() -> new MissingEntityException("No user found"));
 
         AuthToken authToken = bearerTokenService.generateToken(user);
         authTokenRepository.save(authToken);
@@ -80,10 +81,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserPublicDto receiveUserInfo(Long id) {
         if (id == null){
-            throw new RuntimeException("Missing ID in request");
+            throw new IllegalArgumentException("Missing ID in request");
         }
         UserEntity user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new MissingEntityException("User not found"));
 
         return UserPublicDto.builder()
                 .Id(user.getId())
@@ -95,10 +96,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserPublicDto receiveUserInfo(String username) {
         if (username == null || username.isBlank()){
-            throw new RuntimeException("Missing username in request");
+            throw new IllegalArgumentException("Missing username in request");
         }
         UserEntity user = userRepository.findUserByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new MissingEntityException("User not found"));
 
         return UserPublicDto.builder()
                 .Id(user.getId())
