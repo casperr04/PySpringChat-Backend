@@ -15,6 +15,7 @@ import com.casperr04.pyspringchatbackend.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -54,7 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthResponse authenticate(UserLoginDto userLoginDto) throws MissingEntityException {
+    public AuthResponse authenticate(UserLoginDto userLoginDto) throws MissingEntityException, AuthenticationException {
         // Will throw bad credentials exception if password or username is invalid
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

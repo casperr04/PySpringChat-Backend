@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.security.sasl.AuthenticationException;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/v1/auth/")
@@ -23,7 +25,7 @@ public class UserAuthenticationController {
         return ResponseEntity.ok(returnDto);
     }
     @PostMapping("login")
-    public ResponseEntity<?> login(@RequestBody UserLoginDto userLoginDto) {
+    public ResponseEntity<?> login(@RequestBody UserLoginDto userLoginDto) throws AuthenticationException {
         var returnDto = userService.authenticate(userLoginDto);
         return ResponseEntity.ok(returnDto);
     }

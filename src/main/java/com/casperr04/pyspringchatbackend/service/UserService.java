@@ -5,10 +5,11 @@ import com.casperr04.pyspringchatbackend.model.dto.AuthResponse;
 import com.casperr04.pyspringchatbackend.model.dto.UserLoginDto;
 import com.casperr04.pyspringchatbackend.model.dto.UserPublicDto;
 import com.casperr04.pyspringchatbackend.model.dto.UserRegisterDto;
+import org.springframework.security.core.AuthenticationException;
 
 public interface UserService {
     AuthResponse registerUser(UserRegisterDto userRegisterDto) throws IllegalArgumentException;
-    AuthResponse authenticate(UserLoginDto userLoginDto) throws IllegalArgumentException;
+    AuthResponse authenticate(UserLoginDto userLoginDto) throws IllegalArgumentException, AuthenticationException;
 
 
     /**
