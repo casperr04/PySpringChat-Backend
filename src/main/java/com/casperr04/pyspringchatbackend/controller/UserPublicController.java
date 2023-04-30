@@ -1,6 +1,7 @@
 package com.casperr04.pyspringchatbackend.controller;
 
 
+import com.casperr04.pyspringchatbackend.model.dto.UserPublicDto;
 import com.casperr04.pyspringchatbackend.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +21,13 @@ public class UserPublicController {
     private final UserService userService;
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<?> getPublicUserInformationById(@PathVariable("id") Long id) {
+    public ResponseEntity<UserPublicDto> getPublicUserInformationById(@PathVariable("id") Long id) {
         var returnDto = userService.receiveUserInfo(id);
         return ResponseEntity.ok(returnDto);
     }
 
     @GetMapping("/name/{username}")
-    public ResponseEntity<?> getPublicUserInformationById(@PathVariable("username") String username) {
+    public ResponseEntity<UserPublicDto> getPublicUserInformationById(@PathVariable("username") String username) {
         var returnDto = userService.receiveUserInfo(username);
         return ResponseEntity.ok(returnDto);
     }
