@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
     private final BearerTokenService bearerTokenService;
     private final AuthTokenRepository authTokenRepository;
 
-    public AuthResponse registerUser(UserRegisterDto userRegisterDto) throws RuntimeException {
+    public AuthResponse registerUser(UserRegisterDto userRegisterDto) throws IllegalArgumentException {
         if (userRegisterDto.getUsername() == null || userRegisterDto.getUsername().isBlank()) {
             throw new IllegalArgumentException("Username empty in request.");
         }
