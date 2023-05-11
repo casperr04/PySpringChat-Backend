@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
                 .build();
         UserEntity savedUser = userRepository.save(user);
 
-        AuthToken authToken = bearerTokenService.generateToken(user);
+        AuthToken authToken = authTokenRepository.save(bearerTokenService.generateToken(user));
 
         return AuthResponse.builder()
                 .username(userRegisterDto.getUsername())
