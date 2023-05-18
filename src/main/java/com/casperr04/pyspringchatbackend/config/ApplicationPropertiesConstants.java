@@ -13,4 +13,7 @@ import org.springframework.stereotype.Component;
 public class ApplicationPropertiesConstants {
     @Value("${bearer_token_expiration_length:84600}")
     private int BEARER_TOKEN_EXPIRATION_LENGTH;
+
+    @Value("${websocket_user_heartbeat:84600}")
+    private int WEBSOCKET_USER_HEARTBEAT;
 }
