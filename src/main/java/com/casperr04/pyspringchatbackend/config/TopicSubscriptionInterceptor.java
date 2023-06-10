@@ -1,5 +1,6 @@
 package com.casperr04.pyspringchatbackend.config;
 
+import com.casperr04.pyspringchatbackend.repository.PrivateChannelRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +11,6 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.Objects;
 
 @SuppressWarnings("NullableProblems")
@@ -21,6 +21,8 @@ public class TopicSubscriptionInterceptor implements ChannelInterceptor {
 
     private WebsocketSessionUsers websocketSessionUsers;
 
+    private PrivateChannelRepository privateChannelRepository;
+
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
@@ -29,35 +31,50 @@ public class TopicSubscriptionInterceptor implements ChannelInterceptor {
             return message;
         }
 
-        String destinationUrl = Objects.requireNonNull(headerAccessor.getNativeHeader("channel")).get(0);
+        if (StompCommand.SUBSCRIBE.equals(headerAccessor.getCommand()) || StompCommand.SEND.equals(headerAccessor.getCommand())) {
+            String destinationId = Objects.requireNonNull(headerAccessor.getNativeHeader("channel")).get(0);
+            String destinationUrl = headerAccessor.getDestination();
+            String username = Objects.requireNonNull(headerAccessor.getUser()).getName();
 
-        if (StompCommand.SUBSCRIBE.equals(headerAccessor.getCommand())) {
-            Principal userPrincipal = headerAccessor.getUser();
-            if (!validateSubscription(userPrincipal, headerAccessor.getDestination())) {
-                throw new IllegalArgumentException("No permission for this topic");
+            if(StompCommand.SUBSCRIBE.equals(headerAccessor.getCommand())){
+                assert destinationUrl != null;
+                if(!destinationUrl.contains("/user/" + username )){
+                    logger.info("User " + username +  " not subscribing to authenticated username (" + destinationUrl + ")");
+                    throw new IllegalArgumentException("User not subscribing to authenticated username");
+                }
             }
-        }
-        if (StompCommand.SEND.equals(headerAccessor.getCommand())) {
-            return message;
-        }
-        String username = Objects.requireNonNull(headerAccessor.getUser()).getName();
-        if(websocketSessionUsers.checkChannelSessionExists(destinationUrl)) {
-            websocketSessionUsers.addUserToChannelSession(
-                    destinationUrl,
-                    username);
-        } else {
-            websocketSessionUsers.createChannelSession(destinationUrl, headerAccessor.getUser().getName());
+
+            if(!validateSubscription(username, destinationId)){
+                logger.info("User " + username +  " not eligible to subscribe to topic");
+                throw new IllegalArgumentException("User not eligible to subscribe to topic");
+            }
+
+            logger.info(headerAccessor.getDestination());
+            setWebsocketSessionUsers(username, destinationId);
         }
         return message;
     }
 
-    private boolean validateSubscription(Principal principal, String topicDestination) {
-        if (principal == null) {
-            logger.debug("User is unauthenticated");
+    private boolean validateSubscription(String username, String topicDestination) {
+        if (username == null) {
+            logger.warn("Unauthenticated user tried to subscribe to topic");
             return false;
         }
-        logger.debug("Validate subscription for {} to topic {}", principal.getName(), topicDestination);
-        // Additional validation logic coming here
-        return true;
+        var privateMessageChannelEntity = privateChannelRepository.findChannelEntityById(Long.valueOf(topicDestination));
+        if(privateMessageChannelEntity == null){
+            logger.info("No channel found for " + username + ", " + topicDestination);
+            return false;
+        }
+
+        return (Objects.equals(privateMessageChannelEntity.getRecipient().getUsername(), username)
+                || Objects.equals(privateMessageChannelEntity.getSender().getUsername(), username));
+    }
+
+    private void setWebsocketSessionUsers(String username, String url){
+        if (websocketSessionUsers.checkChannelSessionExists(url)) {
+            websocketSessionUsers.addUserToChannelSession(url, username);
+        } else {
+            websocketSessionUsers.createChannelSession(url, username);
+        }
     }
 }
