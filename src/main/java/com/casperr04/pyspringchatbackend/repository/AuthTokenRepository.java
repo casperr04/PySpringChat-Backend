@@ -11,5 +11,4 @@ import java.util.Optional;
 public interface AuthTokenRepository extends JpaRepository<AuthToken, Long> {
     @Query("select a from AuthToken a where a.token = ?1")
     Optional<AuthToken> findAuthTokenByToken(String token);
-
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * This controller is for unauthenticated endpoints that server public user information.
+ * This controller is for unauthenticated endpoints that serve public user information.
  */
 @RestController
 @AllArgsConstructor
