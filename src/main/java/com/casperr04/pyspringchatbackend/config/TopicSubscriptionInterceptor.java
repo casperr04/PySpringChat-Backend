@@ -48,8 +48,6 @@ public class TopicSubscriptionInterceptor implements ChannelInterceptor {
                 logger.info("User " + username +  " not eligible to subscribe to topic");
                 throw new IllegalArgumentException("User not eligible to subscribe to topic");
             }
-
-            logger.info(headerAccessor.getDestination());
             setWebsocketSessionUsers(username, destinationId);
         }
         return message;
