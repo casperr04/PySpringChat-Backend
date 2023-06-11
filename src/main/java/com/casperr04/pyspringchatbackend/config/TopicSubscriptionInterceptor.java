@@ -60,6 +60,7 @@ public class TopicSubscriptionInterceptor implements ChannelInterceptor {
             logger.warn("Unauthenticated user tried to subscribe to topic");
             return false;
         }
+
         var privateMessageChannelEntity = privateChannelRepository.findChannelEntityById(Long.valueOf(topicDestination));
         if(privateMessageChannelEntity == null){
             logger.info("No channel found for " + username + ", " + topicDestination);

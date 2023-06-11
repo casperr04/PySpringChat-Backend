@@ -53,7 +53,7 @@ public class WebsocketSessionUsers {
     }
 
     /**
-     * Adds a user to channel
+     * Adds a user to channel, updates heartbeat if user is already in it.
      * @param channel  Channel ID
      * @param username Username of user to add
      * @throws NullPointerException if usernames or channel is null
