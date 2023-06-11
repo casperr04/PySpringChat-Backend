@@ -7,9 +7,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.Instant;
 
@@ -17,7 +15,10 @@ import java.time.Instant;
 @Getter
 @Setter
 @ToString
+@Builder
 @Table(name = "friends")
+@NoArgsConstructor
+@AllArgsConstructor
 public class FriendsEntity extends BaseEntity {
 
     @NotNull
