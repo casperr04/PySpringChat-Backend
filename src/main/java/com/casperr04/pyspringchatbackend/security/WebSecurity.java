@@ -20,7 +20,7 @@ public class WebSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/v1/auth/**", "/v1/user/info/**", "/v1/pm/**")
+                .requestMatchers("/v1/auth/**", "/v1/user/info/**", "/v1/pm/**", "/swagger-ui/index.html", "/v3/api-docs")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

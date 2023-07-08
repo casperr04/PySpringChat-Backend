@@ -33,11 +33,14 @@ public class PrivateMessageController {
     public void handleAccessDeniedException(AccessDeniedException ex) {
     }
     @MessageMapping("/chat/{id}")
-    public void Greetings(@Payload String message, @DestinationVariable String id, Principal principal){
+    public void Greetings(@Payload(required = false, value = "") String message, @DestinationVariable String id, Principal principal){
         UserEntity userEntity = userRepository.findUserByUsername(principal.getName()).get();
 
+        if(message == null){
+            return;
+        }
+
         String username = userEntity.getUsername();
-        String preparedMessage = username + " SENT: " + message;
         var channel = privateChannelRepository.findChannelEntityById(Long.valueOf(id));
 
         PrivateMessageEntity privateMessage = PrivateMessageEntity.builder()
@@ -47,7 +50,11 @@ public class PrivateMessageController {
                 .dateOfCreation(Instant.now())
                 .build();
 
-        privateMessageEntityRepository.save(privateMessage);
+        var savedMessage = privateMessageEntityRepository.save(privateMessage);
+
+        String preparedMessage = "MSG-ID: " + savedMessage.getId() + "\n" +
+                "DATE: " + privateMessage.getDateOfCreation() + "\n" +
+                username + " SENT: " + message;
 
 
         for (WebSocketUser user: websocketSessionUsers.getUserListFromChannel(id)) {

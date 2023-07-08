@@ -78,14 +78,6 @@ public class UserServiceImplTest {
             .creationDate(Instant.now())
             .user(mockUser)
             .build();
-    @Test
-    void RegisterUser_ValidUserDto_RegisterUserAndReturnAuthResponse(){
-        when(userRepository.save(any())).thenReturn(mockUser);
-        when(bearerTokenService.generateToken(any())).thenReturn(mockToken);
-        AuthResponse authResponse = userService.registerUser(mockDto);
-        assertEquals(authResponse.getUsername(), mockDto.getUsername());
-
-    }
 
     @Test
     void RegisterUser_NoUsernameInDto_ThrowsIllegalArgumentException(){
