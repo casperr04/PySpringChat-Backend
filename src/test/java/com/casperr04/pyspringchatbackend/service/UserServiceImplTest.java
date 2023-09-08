@@ -1,5 +1,6 @@
 package com.casperr04.pyspringchatbackend.service;
 
+import com.casperr04.pyspringchatbackend.config.ApplicationPropertiesConstants;
 import com.casperr04.pyspringchatbackend.exception.MissingEntityException;
 import com.casperr04.pyspringchatbackend.model.dto.AuthResponse;
 import com.casperr04.pyspringchatbackend.model.dto.UserLoginDto;
@@ -50,6 +51,9 @@ public class UserServiceImplTest {
 
     @Mock
     AuthTokenRepository authTokenRepository;
+
+    @Spy
+    ApplicationPropertiesConstants applicationPropertiesConstants;
 
     @InjectMocks
     @Autowired

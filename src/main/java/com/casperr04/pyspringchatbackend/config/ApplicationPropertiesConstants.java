@@ -16,4 +16,7 @@ public class ApplicationPropertiesConstants {
 
     @Value("${websocket_user_heartbeat:84600}")
     private int WEBSOCKET_USER_HEARTBEAT;
+
+    private String USERNAME_VALIDATION_REGEX = "^[a-z0-9_-]{3,15}$";
+
 }

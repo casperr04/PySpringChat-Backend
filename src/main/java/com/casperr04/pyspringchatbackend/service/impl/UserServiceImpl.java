@@ -1,5 +1,6 @@
 package com.casperr04.pyspringchatbackend.service.impl;
 
+import com.casperr04.pyspringchatbackend.config.ApplicationPropertiesConstants;
 import com.casperr04.pyspringchatbackend.exception.MissingEntityException;
 import com.casperr04.pyspringchatbackend.model.dto.AuthResponse;
 import com.casperr04.pyspringchatbackend.model.dto.UserLoginDto;
@@ -19,6 +20,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -27,6 +31,7 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final BearerTokenService bearerTokenService;
     private final AuthTokenRepository authTokenRepository;
+    private final ApplicationPropertiesConstants applicationPropertiesConstants;
 
     public AuthResponse registerUser(UserRegisterDto userRegisterDto) throws IllegalArgumentException {
         if (userRegisterDto.getUsername() == null || userRegisterDto.getUsername().isBlank()) {
@@ -34,6 +39,12 @@ public class UserServiceImpl implements UserService {
         }
         if (userRepository.findUserByUsername(userRegisterDto.getUsername()).isPresent()) {
             throw new IllegalArgumentException("User already exists by username");
+        }
+
+        Pattern pattern = Pattern.compile(applicationPropertiesConstants.getUSERNAME_VALIDATION_REGEX());
+        Matcher matcher = pattern.matcher(userRegisterDto.getUsername());
+        if(!matcher.find()){
+            throw new IllegalArgumentException("Username does not fit constraints");
         }
 
         UserEntity user = UserEntity.builder()
