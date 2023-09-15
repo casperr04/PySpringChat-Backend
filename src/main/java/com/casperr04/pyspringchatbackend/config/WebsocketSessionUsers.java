@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -20,7 +20,7 @@ import java.util.HashMap;
 @AllArgsConstructor
 public class WebsocketSessionUsers {
     private ApplicationPropertiesConstants constants;
-    private final HashMap<String, ArrayList<WebSocketUser>> sessions = new HashMap<>();
+    private final ConcurrentHashMap<String, ArrayList<WebSocketUser>> sessions = new ConcurrentHashMap<>();
 
     /**
      * Creates channel session to store users.
@@ -103,9 +103,10 @@ public class WebsocketSessionUsers {
 
     /**
      * Returns the session HashMap
+     *
      * @return Sessions HashMap
      */
-    public HashMap<String, ArrayList<WebSocketUser>> getWebSocketChannels() {
+    public ConcurrentHashMap<String, ArrayList<WebSocketUser>> getWebSocketChannels() {
         return this.sessions;
     }
 }
