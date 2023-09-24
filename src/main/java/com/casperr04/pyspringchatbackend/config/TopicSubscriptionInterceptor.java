@@ -36,16 +36,17 @@ public class TopicSubscriptionInterceptor implements ChannelInterceptor {
             String destinationId = Objects.requireNonNull(headerAccessor.getNativeHeader("channel")).get(0);
             String destinationUrl = headerAccessor.getDestination();
             String username = Objects.requireNonNull(headerAccessor.getUser()).getName();
-
+            assert destinationUrl != null;
             if(StompCommand.SUBSCRIBE.equals(headerAccessor.getCommand())){
-                assert destinationUrl != null;
                 if(!destinationUrl.contains("/user/" + username )){
-                    logger.info("User " + username +  " not subscribing to authenticated username (" + destinationUrl + ")");
+                    logger.debug("User " + username +  " not subscribing to authenticated username (" + destinationUrl + ")");
                     throw new IllegalArgumentException("User not subscribing to authenticated username");
                 }
             }
-            if(!validateSubscription(username, destinationId)){
-                logger.info("User " + username +  " not eligible to subscribe to topic");
+
+
+            if(!validateSubscription(username, destinationId, destinationUrl)){
+                logger.debug("User " + username +  " not eligible to subscribe to topic");
                 throw new IllegalArgumentException("User not eligible to subscribe to topic");
             }
 
@@ -55,15 +56,19 @@ public class TopicSubscriptionInterceptor implements ChannelInterceptor {
         return message;
     }
 
-    private boolean validateSubscription(String username, String topicDestination) {
+    private boolean validateSubscription(String username, String topicID, String topicUrl) {
+        if(topicUrl.endsWith("event")){
+            return true;
+        }
+
         if (username == null) {
-            logger.warn("Unauthenticated user tried to subscribe to topic");
+            logger.debug("Unauthenticated user tried to subscribe to topic");
             return false;
         }
 
-        var privateMessageChannelEntity = privateChannelRepository.findChannelEntityById(Long.valueOf(topicDestination));
+        var privateMessageChannelEntity = privateChannelRepository.findChannelEntityById(Long.valueOf(topicID));
         if(privateMessageChannelEntity == null){
-            logger.info("No channel found for " + username + ", " + topicDestination);
+            logger.debug("No channel found for " + username + ", " + topicID);
             return false;
         }
 
