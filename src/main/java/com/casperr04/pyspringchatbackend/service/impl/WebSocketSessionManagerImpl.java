@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -33,6 +34,7 @@ public class WebSocketSessionManagerImpl implements WebSocketSessionManager {
         logger.info(String.format("Removed %s empty websocket channels", removalCount.get()));
     }
 
+    @SuppressWarnings("WhileLoopReplaceableByForEach")
     @Override
     @Scheduled(timeUnit = TimeUnit.MINUTES, fixedDelay = 30)
     @Async
@@ -40,8 +42,10 @@ public class WebSocketSessionManagerImpl implements WebSocketSessionManager {
         Logger logger = LoggerFactory.getLogger(WebSocketSessionManagerImpl.class);
         AtomicInteger removalCount = new AtomicInteger();
         websocketSessionUsers.getWebSocketChannels().forEach((key, value) -> {
-            for (WebSocketUser user : value){
-                if (user.getHeartbeat().isBefore(Instant.now())){
+            Iterator<WebSocketUser> iter = value.iterator();
+            while (iter.hasNext()) {
+                WebSocketUser user = iter.next();
+                if (user.getHeartbeat().isBefore(Instant.now())) {
                     websocketSessionUsers.removeUserFromChannelSession(key, user.getUsername());
                     removalCount.addAndGet(1);
                 }
