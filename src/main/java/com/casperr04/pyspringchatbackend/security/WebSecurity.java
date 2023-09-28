@@ -22,8 +22,15 @@ public class WebSecurity {
                 .authorizeHttpRequests()
                 .requestMatchers("/v1/auth/**", "/v1/user/info/**", "/v1/pm/**", "/swagger-ui/index.html", "/v3/api-docs")
                 .permitAll()
-                .anyRequest()
+                .requestMatchers("/v1/friend/remove/{username}",
+                        "/v1/friend/request/accept/{username}",
+                        "/v1/friend/request/send/{username}",
+                        "/v1/channels/create/private-channel/{username}",
+                        "/v1/channels/message/private-channel/{channelid}/{messageid}",
+                        "/chat-test")
                 .authenticated()
+                .anyRequest()
+                .permitAll()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
