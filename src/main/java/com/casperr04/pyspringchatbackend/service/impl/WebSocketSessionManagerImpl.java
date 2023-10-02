@@ -31,7 +31,7 @@ public class WebSocketSessionManagerImpl implements WebSocketSessionManager {
                 removalCount.addAndGet(1);
             }
         });
-        logger.info(String.format("Removed %s empty websocket channels", removalCount.get()));
+        logger.info("Removed {} empty websocket channels", removalCount.get());
     }
 
     @SuppressWarnings("WhileLoopReplaceableByForEach")
@@ -51,6 +51,6 @@ public class WebSocketSessionManagerImpl implements WebSocketSessionManager {
                 }
             }
         });
-        logger.info(String.format("Removed %s idle websocket users", removalCount.get()));
+        logger.info("Removed {} idle websocket users", removalCount.get());
     }
 }
