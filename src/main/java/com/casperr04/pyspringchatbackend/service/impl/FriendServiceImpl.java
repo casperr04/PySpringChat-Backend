@@ -6,6 +6,7 @@ import com.casperr04.pyspringchatbackend.model.entity.UserEntity;
 import com.casperr04.pyspringchatbackend.repository.FriendRepository;
 import com.casperr04.pyspringchatbackend.repository.UserRepository;
 import com.casperr04.pyspringchatbackend.service.FriendService;
+import com.casperr04.pyspringchatbackend.service.UserEventHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.Objects;
 public class FriendServiceImpl implements FriendService {
     private FriendRepository friendRepository;
     private UserRepository userRepository;
+    private UserEventHandler userEventHandler;
 
     @Override
     public void sendFriendRequest(String username) {
@@ -26,7 +28,7 @@ public class FriendServiceImpl implements FriendService {
 
         UserEntity friendingUser = userRepository
                 .findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
-                .get();
+                .orElseThrow(() -> new MissingEntityException("No user found"));
 
         if(Objects.equals(userToFriend.getUsername(), friendingUser.getUsername())){
             return;
@@ -52,7 +54,7 @@ public class FriendServiceImpl implements FriendService {
 
         UserEntity userReceivingFriendRequest = userRepository
                 .findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
-                .get();
+                .orElseThrow(() -> new  MissingEntityException("User receiving friend request not found"));
 
         FriendsEntity friendsEntity = friendRepository.getSpecificFriendRequest(friendingUser, userReceivingFriendRequest)
                 .orElseThrow(() -> new MissingEntityException("No friend request found"));
@@ -69,7 +71,7 @@ public class FriendServiceImpl implements FriendService {
 
         UserEntity userRemovingFriend = userRepository
                 .findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
-                .get();
+                .orElseThrow(() -> new MissingEntityException("No user found"));
 
         FriendsEntity friendsEntity = friendRepository.getIfUsersAreFriended(friendToRemove, userRemovingFriend)
                 .orElseThrow(() -> new MissingEntityException("No friend found"));
