@@ -46,6 +46,7 @@ public class FriendServiceImpl implements FriendService {
                 .build();
 
         friendRepository.save(friendsEntity);
+        userEventHandler.sendEventMessage("Received friend request from: " + friendingUser.getUsername(), userToFriend.getUsername(), "RECEIVED FRIEND REQUEST");
     }
     @Override
     public void acceptFriendRequest(String username) {
@@ -62,6 +63,8 @@ public class FriendServiceImpl implements FriendService {
         friendsEntity.setConfirmed(true);
         friendsEntity.setFriendDate(Instant.now());
         friendRepository.save(friendsEntity);
+        userEventHandler.sendEventMessage("Friend request accepted from:" + SecurityContextHolder.getContext().getAuthentication().getName(),
+                username, "FRIEND REQUEST ACCEPTED");
     }
 
     @Override
@@ -77,5 +80,7 @@ public class FriendServiceImpl implements FriendService {
                 .orElseThrow(() -> new MissingEntityException("No friend found"));
 
         friendRepository.delete(friendsEntity);
+        userEventHandler.sendEventMessage("Removed from friends by:" + SecurityContextHolder.getContext().getAuthentication().getName(),
+                username, "REMOVED FROM FRIENDS");
     }
 }
