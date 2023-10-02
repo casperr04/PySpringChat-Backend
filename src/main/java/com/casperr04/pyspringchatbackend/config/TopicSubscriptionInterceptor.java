@@ -37,16 +37,13 @@ public class TopicSubscriptionInterceptor implements ChannelInterceptor {
             String destinationUrl = headerAccessor.getDestination();
             String username = Objects.requireNonNull(headerAccessor.getUser()).getName();
             assert destinationUrl != null;
-            if(StompCommand.SUBSCRIBE.equals(headerAccessor.getCommand())){
-                if(!destinationUrl.contains("/user/" + username )){
-                    logger.debug("User " + username +  " not subscribing to authenticated username (" + destinationUrl + ")");
+            if(StompCommand.SUBSCRIBE.equals(headerAccessor.getCommand()) && !destinationUrl.contains("/user/" + username)){
+                    logger.debug(("User {} not subscribing to authenticated username ( {} )"), username, destinationUrl);
                     throw new IllegalArgumentException("User not subscribing to authenticated username");
-                }
             }
 
-
             if(!validateSubscription(username, destinationId, destinationUrl)){
-                logger.debug("User " + username +  " not eligible to subscribe to topic");
+                logger.debug("User {} not eligible to subscribe to topic", username);
                 throw new IllegalArgumentException("User not eligible to subscribe to topic");
             }
 
@@ -68,7 +65,7 @@ public class TopicSubscriptionInterceptor implements ChannelInterceptor {
 
         var privateMessageChannelEntity = privateChannelRepository.findChannelEntityById(Long.valueOf(topicID));
         if(privateMessageChannelEntity == null){
-            logger.debug("No channel found for " + username + ", " + topicID);
+            logger.debug("No channel found for {}, {} ", username, topicID);
             return false;
         }
 
