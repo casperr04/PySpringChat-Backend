@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -27,7 +28,7 @@ public class WebsocketSessionUsers {
      * @param channel Channel ID
      * @param usernames Usernames of users in channel
      */
-    public void createChannelSession(String channel, ArrayList<String> usernames) {
+    public void createChannelSession(String channel, List<String> usernames) {
         ArrayList<WebSocketUser> webSocketUsers = new ArrayList<>();
         for(String username : usernames) {
             webSocketUsers.add(WebSocketUser.builder()
@@ -89,7 +90,7 @@ public class WebsocketSessionUsers {
      * @param channel Channel ID
      * @return Users from channel, null if channel not found.
      */
-    public ArrayList<WebSocketUser> getUserListFromChannel(String channel) {
+    public List<WebSocketUser> getUserListFromChannel(String channel) {
         return sessions.get(channel);
     }
 
