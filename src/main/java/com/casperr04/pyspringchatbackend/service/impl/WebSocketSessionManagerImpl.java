@@ -22,7 +22,7 @@ public class WebSocketSessionManagerImpl implements WebSocketSessionManager {
     @Override
     @Scheduled(timeUnit = TimeUnit.MINUTES, fixedDelay = 30)
     @Async
-    public void RemoveEmptyWebSocketChannels() {
+    public void removeEmptyWebSocketChannels() {
         Logger logger = LoggerFactory.getLogger(WebSocketSessionManagerImpl.class);
         AtomicInteger removalCount = new AtomicInteger();
         websocketSessionUsers.getWebSocketChannels().forEach((key, value) -> {
@@ -38,7 +38,7 @@ public class WebSocketSessionManagerImpl implements WebSocketSessionManager {
     @Override
     @Scheduled(timeUnit = TimeUnit.MINUTES, fixedDelay = 30)
     @Async
-    public void RemoveIdleWebSocketUsers() {
+    public void removeIdleWebSocketUsers() {
         Logger logger = LoggerFactory.getLogger(WebSocketSessionManagerImpl.class);
         AtomicInteger removalCount = new AtomicInteger();
         websocketSessionUsers.getWebSocketChannels().forEach((key, value) -> {
