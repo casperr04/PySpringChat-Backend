@@ -36,7 +36,7 @@ import static org.mockito.Mockito.*;
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class UserServiceImplTest {
+class UserServiceImplTest {
     @Mock
     UserRepository userRepository;
 

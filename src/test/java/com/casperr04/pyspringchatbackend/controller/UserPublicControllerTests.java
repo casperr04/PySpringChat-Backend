@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ContextConfiguration(classes = UserPublicController.class)
 @ImportAutoConfiguration(ExceptionControllerAdvice.class)
 @ExtendWith(MockitoExtension.class)
-public class UserPublicControllerTests {
+class UserPublicControllerTests {
 
     @Autowired
     private MockMvc mockMvc;

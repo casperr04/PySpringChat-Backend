@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class BearerTokenServiceImplTest {
+class BearerTokenServiceImplTest {
     @Spy
     ApplicationPropertiesConstants applicationPropertiesConstants;
 
