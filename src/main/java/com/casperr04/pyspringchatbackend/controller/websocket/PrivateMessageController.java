@@ -33,8 +33,8 @@ public class PrivateMessageController {
     public void handleAccessDeniedException(AccessDeniedException ex) {
     }
     @MessageMapping("/chat/{id}")
-    public void Greetings(@Payload(required = false, value = "") String message, @DestinationVariable String id, Principal principal){
-        UserEntity userEntity = userRepository.findUserByUsername(principal.getName()).get();
+    public void pivateChat(@Payload(required = false, value = "") String message, @DestinationVariable String id, Principal principal){
+        UserEntity userEntity = userRepository.findUserByUsername(principal.getName()).orElseThrow(() -> new MissingEntityException("User not found"));
 
         if(message == null){
             return;
