@@ -1,6 +1,7 @@
 package com.casperr04.pyspringchatbackend.controller;
 
 import com.casperr04.pyspringchatbackend.config.WebsocketSessionUsers;
+import com.casperr04.pyspringchatbackend.exception.MissingEntityException;
 import com.casperr04.pyspringchatbackend.model.WebSocketUser;
 import com.casperr04.pyspringchatbackend.model.entity.PrivateMessageEntity;
 import com.casperr04.pyspringchatbackend.model.entity.UserEntity;
