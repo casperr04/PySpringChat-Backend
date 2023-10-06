@@ -1,4 +1,4 @@
-package com.casperr04.pyspringchatbackend.controller;
+package com.casperr04.pyspringchatbackend.controller.websocket;
 
 import com.casperr04.pyspringchatbackend.config.WebsocketSessionUsers;
 import com.casperr04.pyspringchatbackend.exception.MissingEntityException;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @RestController
 @AllArgsConstructor
@@ -41,8 +42,12 @@ public class PrivateMessageController {
             return;
         }
 
+
+
         String username = userEntity.getUsername();
         var channel = privateChannelRepository.findChannelEntityById(Long.valueOf(id));
+
+
 
         PrivateMessageEntity privateMessage = PrivateMessageEntity.builder()
                 .user(userEntity)
@@ -53,9 +58,20 @@ public class PrivateMessageController {
 
         var savedMessage = privateMessageEntityRepository.save(privateMessage);
 
-        String preparedMessage = "MSG-ID: " + savedMessage.getId() + "\n" +
-                "DATE: " + privateMessage.getDateOfCreation() + "\n" +
-                username + " SENT: " + message;
+        if(message.equals("/ping_channel")){
+            LocalDateTime now = LocalDateTime.now();
+            String preparedMessage = "SERVER" + "\n" +
+                    "N/A" + "\n" +
+                    now + "\n" +
+                    "pong!";
+            messagingTemplate.convertAndSendToUser(principal.getName(), "/queue/chat/" + id, preparedMessage);
+            return;
+        }
+
+        String preparedMessage = username + "\n" +
+                savedMessage.getId() + "\n" +
+                privateMessage.getDateOfCreation() + "\n" +
+                message;
 
 
         for (WebSocketUser user: websocketSessionUsers.getUserListFromChannel(id)) {
