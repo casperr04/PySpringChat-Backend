@@ -27,7 +27,8 @@ public class WebSecurity {
                         "/v1/friend/request/send/{username}",
                         "/v1/channels/create/private-channel/{username}",
                         "/v1/channels/message/private-channel/{channelid}/{messageid}",
-                        "/chat-test")
+                        "/chat-test",
+                        "/demo/controller")
                 .authenticated()
                 .anyRequest()
                 .permitAll()
