@@ -17,9 +17,9 @@ public interface PrivateChannelRepository extends JpaRepository<PrivateMessageCh
     @Query("select p from PrivateMessageChannelEntity p where p.id = ?1")
     PrivateMessageChannelEntity findChannelEntityById(Long id);
 
-    @Query("select p from PrivateMessageChannelEntity p where p.sender = ?1 and p.recipient = ?2 or p.sender = ?2 and p.recipient = ?1")
+    @Query("select p from PrivateMessageChannelEntity p where (p.sender = ?1 and p.recipient = ?2) or (p.sender = ?2 and p.recipient = ?1)")
     Optional<PrivateMessageChannelEntity> findPrivateChannelByUsers(UserEntity user, UserEntity user2);
 
-    @Query("select p from PrivateMessageChannelEntity p where p.sender.username = ?1 or p.recipient.username = ?1 and p.id = ?2")
+    @Query("select p from PrivateMessageChannelEntity p where (p.sender.username = ?1 or p.recipient.username = ?1) and p.id = ?2")
     Optional<PrivateMessageChannelEntity> findIfUserIsInChannel(String username, Long id);
 }
