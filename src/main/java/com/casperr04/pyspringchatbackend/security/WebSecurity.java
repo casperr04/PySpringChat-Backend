@@ -27,6 +27,10 @@ public class WebSecurity {
                         "/v1/friend/request/send/{username}",
                         "/v1/channels/create/private-channel/{username}",
                         "/v1/channels/message/private-channel/{channelid}/{messageid}",
+                        "/v1/channels/check/private-channel/{channelid}",
+                        "/v1/friend/accept/{username}",
+                        "/v1/friend/remove/{username}",
+                        "/v1/friend/request/{username}",
                         "/chat-test",
                         "/demo/controller")
                 .authenticated()
