@@ -1,16 +1,14 @@
 package com.casperr04.pyspringchatbackend.service;
 
 import com.casperr04.pyspringchatbackend.exception.MissingEntityException;
-import com.casperr04.pyspringchatbackend.model.dto.AuthResponse;
-import com.casperr04.pyspringchatbackend.model.dto.UserLoginDto;
-import com.casperr04.pyspringchatbackend.model.dto.UserPublicDto;
-import com.casperr04.pyspringchatbackend.model.dto.UserRegisterDto;
+import com.casperr04.pyspringchatbackend.model.dto.*;
 import org.springframework.security.core.AuthenticationException;
 
 public interface UserService {
     AuthResponse registerUser(UserRegisterDto userRegisterDto) throws IllegalArgumentException;
     AuthResponse authenticate(UserLoginDto userLoginDto) throws IllegalArgumentException, AuthenticationException;
 
+    AuthResponse authenticate(TokenDto token) throws MissingEntityException, AuthenticationException;
 
     /**
      * @param id - User ID

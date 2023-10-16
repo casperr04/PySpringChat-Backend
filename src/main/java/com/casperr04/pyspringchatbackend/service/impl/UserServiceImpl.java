@@ -2,10 +2,7 @@ package com.casperr04.pyspringchatbackend.service.impl;
 
 import com.casperr04.pyspringchatbackend.config.ApplicationPropertiesConstants;
 import com.casperr04.pyspringchatbackend.exception.MissingEntityException;
-import com.casperr04.pyspringchatbackend.model.dto.AuthResponse;
-import com.casperr04.pyspringchatbackend.model.dto.UserLoginDto;
-import com.casperr04.pyspringchatbackend.model.dto.UserPublicDto;
-import com.casperr04.pyspringchatbackend.model.dto.UserRegisterDto;
+import com.casperr04.pyspringchatbackend.model.dto.*;
 import com.casperr04.pyspringchatbackend.model.entity.AuthToken;
 import com.casperr04.pyspringchatbackend.model.entity.UserEntity;
 import com.casperr04.pyspringchatbackend.model.entity.enums.UserRoles;
@@ -20,6 +17,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -85,6 +83,28 @@ public class UserServiceImpl implements UserService {
                 .id(user.getId())
                 .accountDateOfCreation(user.getCreationDate())
                 .username(userLoginDto.getUsername())
+                .token(authToken.getToken())
+                .tokenExpirationDate(authToken.getExpirationDate())
+                .build();
+    }
+
+    @Override
+    public AuthResponse authenticate(TokenDto token) throws MissingEntityException, AuthenticationException {
+        var authToken = authTokenRepository.findAuthTokenByToken(token.getToken()).orElseThrow(() -> new MissingEntityException("Invalid token"));
+
+        if(authToken.getExpirationDate().isBefore(Instant.now())) {
+            throw new MissingEntityException("Invalid token");
+        }
+
+        UserEntity user = authToken.getUser();
+
+        AuthToken newToken = bearerTokenService.generateToken(user);
+        authTokenRepository.save(newToken);
+
+        return AuthResponse.builder()
+                .id(user.getId())
+                .accountDateOfCreation(user.getCreationDate())
+                .username(user.getUsername())
                 .token(authToken.getToken())
                 .tokenExpirationDate(authToken.getExpirationDate())
                 .build();

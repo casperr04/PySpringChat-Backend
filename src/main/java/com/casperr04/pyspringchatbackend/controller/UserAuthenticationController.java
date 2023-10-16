@@ -1,9 +1,6 @@
 package com.casperr04.pyspringchatbackend.controller;
 
-import com.casperr04.pyspringchatbackend.model.dto.AuthResponse;
-import com.casperr04.pyspringchatbackend.model.dto.ExceptionResponseModel;
-import com.casperr04.pyspringchatbackend.model.dto.UserLoginDto;
-import com.casperr04.pyspringchatbackend.model.dto.UserRegisterDto;
+import com.casperr04.pyspringchatbackend.model.dto.*;
 import com.casperr04.pyspringchatbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -54,6 +51,13 @@ public class UserAuthenticationController {
     @PostMapping("login")
     public ResponseEntity<AuthResponse> login(@RequestBody UserLoginDto userLoginDto) {
         var returnDto = userService.authenticate(userLoginDto);
+        return ResponseEntity.ok(returnDto);
+    }
+
+
+    @PostMapping("refresh")
+    public ResponseEntity<AuthResponse> refresh(@RequestBody TokenDto tokenDto) {
+        var returnDto = userService.authenticate(tokenDto);
         return ResponseEntity.ok(returnDto);
     }
 }
