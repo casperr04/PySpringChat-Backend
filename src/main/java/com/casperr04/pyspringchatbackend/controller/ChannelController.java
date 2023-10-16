@@ -14,6 +14,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/v1/channels/")
@@ -47,5 +49,12 @@ public class ChannelController {
     public ResponseEntity<MessageInfoDto> getMessageInfo(@Parameter(description = "Channel ID", required = true) @PathVariable String channelid, @Parameter(description = "Message ID", required = true) @PathVariable String messageid) {
         var returnDto = channelService.retrieveMessageInfo(channelid, messageid);
         return ResponseEntity.ok(returnDto);
+    }
+
+    @GetMapping("check/private-channel/{channelid}")
+    public ResponseEntity<Void> checkIfInChannel(Principal principal, @PathVariable Long channelid){
+        if(channelService.checkIfUserInChannel(principal, channelid)){
+            return ResponseEntity.ok().build();
+        } else return ResponseEntity.notFound().build();
     }
 }
