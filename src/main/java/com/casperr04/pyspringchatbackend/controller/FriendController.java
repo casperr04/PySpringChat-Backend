@@ -28,7 +28,7 @@ public class FriendController {
             @ApiResponse(responseCode = "400",
                     description = "User hasn't been found",
                     content = @Content(schema = @Schema(implementation = ExceptionResponseModel.class)))})
-    @PostMapping("/request/send/{username}")
+    @PostMapping("/request/{username}")
     public ResponseEntity<String> sendFriendRequest(@Parameter(description = "Username of user", required = true) @PathVariable String username) {
         friendService.sendFriendRequest(username);
         return ResponseEntity.ok().build();
@@ -41,7 +41,7 @@ public class FriendController {
             @ApiResponse(responseCode = "400",
                     description = "User or friend request not found",
                     content = @Content(schema = @Schema(implementation = ExceptionResponseModel.class)))})
-    @PostMapping("/request/accept/{username}")
+    @PostMapping("/accept/{username}")
     public ResponseEntity<String> acceptFriendRequest(@Parameter(description = "Username of user", required = true) @PathVariable String username) {
         friendService.acceptFriendRequest(username);
         return ResponseEntity.ok().build();
