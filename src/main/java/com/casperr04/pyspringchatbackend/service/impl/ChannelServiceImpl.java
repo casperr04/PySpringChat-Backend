@@ -16,7 +16,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.time.Instant;
 
 @AllArgsConstructor
@@ -47,7 +46,6 @@ public class ChannelServiceImpl implements ChannelService {
             return null;
         }
 
-        @SuppressWarnings("all")
         FriendsEntity friendsEntity = friendRepository.getIfUsersAreFriended(user, currentUser)
                 .orElseThrow(() -> new MissingEntityException("Users are not friended"));
 
@@ -86,9 +84,5 @@ public class ChannelServiceImpl implements ChannelService {
                 .build();
     }
 
-    @Override
-    public boolean checkIfUserInChannel(Principal principal, Long id){
-		return privateChannelRepository.findIfUserIsInChannel(principal.getName(), id).isPresent();
-    }
 
 }
