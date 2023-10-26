@@ -2,7 +2,9 @@ package com.casperr04.pyspringchatbackend.service.impl;
 
 import com.casperr04.pyspringchatbackend.exception.MissingEntityException;
 import com.casperr04.pyspringchatbackend.model.dto.ChannelCreationResponse;
+import com.casperr04.pyspringchatbackend.model.dto.ChannelDto;
 import com.casperr04.pyspringchatbackend.model.dto.MessageInfoDto;
+import com.casperr04.pyspringchatbackend.model.dto.UserPublicDto;
 import com.casperr04.pyspringchatbackend.model.entity.FriendsEntity;
 import com.casperr04.pyspringchatbackend.model.entity.PrivateMessageChannelEntity;
 import com.casperr04.pyspringchatbackend.model.entity.UserEntity;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.time.Instant;
+import java.util.ArrayList;
 
 @AllArgsConstructor
 @Service
@@ -91,4 +94,38 @@ public class ChannelServiceImpl implements ChannelService {
         return privateChannelRepository.findIfUserIsInChannel(principal.getName(), id).isPresent();
     }
 
+    @Override
+    public ArrayList<Object> getPrivateChannels(Principal principal){
+        var privateChannels = privateChannelRepository.findChannelsByUsername(principal.getName());
+        var privateChannelDtos = new ArrayList<>();
+        for(var channel : privateChannels){
+            var privateChannelDto = ChannelDto.builder()
+                            .channelId(channel.getId()).build();
+
+            var userList = new ArrayList<UserPublicDto>();
+
+            var senderEntity = channel.getSender();
+            var recipientEntity = channel.getRecipient();
+
+            var senderDto = UserPublicDto.builder()
+                    .Id(senderEntity.getId())
+                    .name(senderEntity.getUsername())
+                    .dateOfCreation(senderEntity.getCreationDate())
+                    .build();
+
+            var recipientDto = UserPublicDto.builder()
+                    .Id(recipientEntity.getId())
+                    .name(recipientEntity.getUsername())
+                    .dateOfCreation(recipientEntity.getCreationDate())
+                    .build();
+
+            userList.add(senderDto);
+            userList.add(recipientDto);
+            
+            privateChannelDto.setUsersInChannel(userList);
+            privateChannelDtos.add(privateChannelDto);
+        }
+
+        return privateChannelDtos;
+    }
 }

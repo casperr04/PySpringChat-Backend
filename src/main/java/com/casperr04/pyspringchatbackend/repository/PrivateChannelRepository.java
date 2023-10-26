@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Repository
@@ -22,4 +23,7 @@ public interface PrivateChannelRepository extends JpaRepository<PrivateMessageCh
 
     @Query("select p from PrivateMessageChannelEntity p where (p.sender.username = ?1 or p.recipient.username = ?1) and p.id = ?2")
     Optional<PrivateMessageChannelEntity> findIfUserIsInChannel(String username, Long id);
+
+    @Query("select p from PrivateMessageChannelEntity p where p.recipient.username = ?1 or p.sender.username = ?1")
+    ArrayList<PrivateMessageChannelEntity> findChannelsByUsername(String username);
 }
