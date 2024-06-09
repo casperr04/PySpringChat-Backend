@@ -2,8 +2,8 @@ package com.casperr04.pyspringchatbackend.service.impl;
 
 import com.casperr04.pyspringchatbackend.config.WebsocketSessionUsers;
 import com.casperr04.pyspringchatbackend.model.WebSocketUser;
-import com.casperr04.pyspringchatbackend.service.UserEventHandler;
 import com.casperr04.pyspringchatbackend.service.WebSocketSessionManager;
+import com.casperr04.pyspringchatbackend.service.WebsocketMessagingHandler;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @AllArgsConstructor
 public class WebSocketSessionManagerImpl implements WebSocketSessionManager {
     private WebsocketSessionUsers websocketSessionUsers;
-    private UserEventHandler userEventHandler;
+    private WebsocketMessagingHandler messagingHangler;
     @Override
     @Scheduled(timeUnit = TimeUnit.MINUTES, fixedDelay = 30)
     @Async
@@ -48,7 +48,7 @@ public class WebSocketSessionManagerImpl implements WebSocketSessionManager {
             while (iter.hasNext()) {
                 WebSocketUser user = iter.next();
                 if (user.getHeartbeat().isBefore(Instant.now())) {
-                    userEventHandler.sendEventMessage("Disconnected for expired heartbeat", user.getUsername(), "TOPIC DISCONNECT");
+                    messagingHangler.sendEventMessage("Disconnected for expired heartbeat", user.getUsername(), "TOPIC DISCONNECT", "SERVER");
                     websocketSessionUsers.removeUserFromChannelSession(key, user.getUsername());
                     removalCount.addAndGet(1);
                 }

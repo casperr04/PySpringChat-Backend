@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 
 /**
@@ -107,7 +108,7 @@ public class WebsocketSessionUsers {
      *
      * @return Sessions HashMap
      */
-    public ConcurrentHashMap<String, ArrayList<WebSocketUser>> getWebSocketChannels() {
+    public ConcurrentMap<String, ArrayList<WebSocketUser>> getWebSocketChannels() {
         return this.sessions;
     }
 }

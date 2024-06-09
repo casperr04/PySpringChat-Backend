@@ -6,7 +6,7 @@ import com.casperr04.pyspringchatbackend.model.entity.UserEntity;
 import com.casperr04.pyspringchatbackend.repository.FriendRepository;
 import com.casperr04.pyspringchatbackend.repository.UserRepository;
 import com.casperr04.pyspringchatbackend.service.FriendService;
-import com.casperr04.pyspringchatbackend.service.UserEventHandler;
+import com.casperr04.pyspringchatbackend.service.WebsocketMessagingHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import java.util.Objects;
 public class FriendServiceImpl implements FriendService {
     private FriendRepository friendRepository;
     private UserRepository userRepository;
-    private UserEventHandler userEventHandler;
+    private WebsocketMessagingHandler messagingHandler;
 
     @Override
     public void sendFriendRequest(String username) {
@@ -46,7 +46,7 @@ public class FriendServiceImpl implements FriendService {
                 .build();
 
         friendRepository.save(friendsEntity);
-        userEventHandler.sendEventMessage("Received friend request from: " + friendingUser.getUsername(), userToFriend.getUsername(), "RECEIVED FRIEND REQUEST");
+        messagingHandler.sendEventMessage("Received friend request from: " + friendingUser.getUsername(), userToFriend.getUsername(), "RECEIVED FRIEND REQUEST", "SERVER");
     }
     @Override
     public void acceptFriendRequest(String username) {
@@ -63,8 +63,8 @@ public class FriendServiceImpl implements FriendService {
         friendsEntity.setConfirmed(true);
         friendsEntity.setFriendDate(Instant.now());
         friendRepository.save(friendsEntity);
-        userEventHandler.sendEventMessage("Friend request accepted from:" + SecurityContextHolder.getContext().getAuthentication().getName(),
-                username, "FRIEND REQUEST ACCEPTED");
+        messagingHandler.sendEventMessage("Friend request accepted from:" + SecurityContextHolder.getContext().getAuthentication().getName(),
+                username, "FRIEND REQUEST ACCEPTED", "SERVER");
     }
 
     @Override
@@ -80,7 +80,7 @@ public class FriendServiceImpl implements FriendService {
                 .orElseThrow(() -> new MissingEntityException("No friend found"));
 
         friendRepository.delete(friendsEntity);
-        userEventHandler.sendEventMessage("Removed from friends by:" + SecurityContextHolder.getContext().getAuthentication().getName(),
-                username, "REMOVED FROM FRIENDS");
+        messagingHandler.sendEventMessage("Removed from friends by:" + SecurityContextHolder.getContext().getAuthentication().getName(),
+                username, "REMOVED FROM FRIENDS", "SERVER");
     }
 }

@@ -8,6 +8,7 @@ import com.casperr04.pyspringchatbackend.model.entity.UserEntity;
 import com.casperr04.pyspringchatbackend.repository.PrivateChannelRepository;
 import com.casperr04.pyspringchatbackend.repository.PrivateMessageEntityRepository;
 import com.casperr04.pyspringchatbackend.repository.UserRepository;
+import com.casperr04.pyspringchatbackend.service.WebsocketMessagingHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @RestController
 @AllArgsConstructor
@@ -27,6 +27,7 @@ public class PrivateMessageController {
 
     private SimpMessagingTemplate messagingTemplate;
     private WebsocketSessionUsers websocketSessionUsers;
+    private WebsocketMessagingHandler messagingHandler;
     private PrivateChannelRepository privateChannelRepository;
     private UserRepository userRepository;
     private final PrivateMessageEntityRepository privateMessageEntityRepository;
@@ -59,23 +60,13 @@ public class PrivateMessageController {
         var savedMessage = privateMessageEntityRepository.save(privateMessage);
 
         if(message.equals("/ping_channel")){
-            LocalDateTime now = LocalDateTime.now();
-            String preparedMessage = "SERVER" + "\n" +
-                    "N/A" + "\n" +
-                    now + "\n" +
-                    "pong!";
-            messagingTemplate.convertAndSendToUser(principal.getName(), "/queue/chat/" + id, preparedMessage);
+            messagingHandler.sendChannelMessage("PONG!", principal.getName(), "CHANNEL MESSAGE", "SERVER", id);
             return;
         }
 
-        String preparedMessage = username + "\n" +
-                savedMessage.getId() + "\n" +
-                privateMessage.getDateOfCreation() + "\n" +
-                message;
-
 
         for (WebSocketUser user: websocketSessionUsers.getUserListFromChannel(id)) {
-            messagingTemplate.convertAndSendToUser(user.getUsername(), "/queue/chat/" + id, preparedMessage);
+            messagingHandler.sendChannelMessage(message, user.getUsername(), "CHANNEL MESSAGE", principal.getName(), id);
         }
     }
 }
