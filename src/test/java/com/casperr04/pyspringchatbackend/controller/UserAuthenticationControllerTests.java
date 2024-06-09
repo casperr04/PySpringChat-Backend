@@ -2,6 +2,7 @@ package com.casperr04.pyspringchatbackend.controller;
 
 import com.casperr04.pyspringchatbackend.exception.ExceptionControllerAdvice;
 import com.casperr04.pyspringchatbackend.model.dto.AuthResponse;
+import com.casperr04.pyspringchatbackend.model.dto.UserLoginDto;
 import com.casperr04.pyspringchatbackend.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -70,7 +71,7 @@ public class UserAuthenticationControllerTests {
 
     @Test
     void AuthenticateUser_ValidUser_Success() throws Exception {
-        when(userService.authenticate(any())).thenReturn(mockResponse);
+        when(userService.authenticate((UserLoginDto) any())).thenReturn(mockResponse);
         String jsonString = mapper.writeValueAsString(mockResponse);
 
         ResultActions response = mockMvc.perform(post("/v1/auth/login")
