@@ -24,9 +24,7 @@ public class ExceptionControllerAdvice {
                 .body(new ExceptionResponseModel(e.getMessage(), Instant.now()));
     }
 
-    /*
-    TODO: make the response more detailed, list which constraints have been violated
-     */
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ExceptionResponseModel> handleConstraintViolationException(ConstraintViolationException e){
         return ResponseEntity.badRequest()

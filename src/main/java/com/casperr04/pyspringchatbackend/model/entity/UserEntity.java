@@ -34,14 +34,6 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @NotBlank
     private String encryptedPassword;
 
-    @ManyToMany
-    @JoinTable(
-            name = "pm_channels_to_user",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "private_message_channel_id")
-    )
-    @ToString.Exclude
-    private Set<PrivateMessageChannelEntity> privateMessageChannels;
 
     @OneToMany(mappedBy = "user")
     @ToString.Exclude

@@ -21,13 +21,8 @@ public class ServerChannelEntity extends ChannelEntity {
     @NotNull
     public ServerEntity server;
 
-    @ManyToMany
-    @JoinTable(
-            name = "server_channel_messages",
-            joinColumns = @JoinColumn(name = "channel_id"),
-            inverseJoinColumns = @JoinColumn(name = "message_id")
-    )
-    @ToString.Exclude
+    @OneToMany
+    @JoinColumn(name="channel_message_id")
     private Set<ChannelMessageEntity> messages;
 
     @ManyToMany

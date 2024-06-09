@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
 
 @RestController
 @AllArgsConstructor
@@ -31,7 +32,7 @@ public class ChannelController {
             @ApiResponse(responseCode = "400",
                     description = "User is not friended or found",
                     content = @Content(schema = @Schema(implementation = ExceptionResponseModel.class)))})
-    @PostMapping("create/private-channel/{username}")
+    @PostMapping("/private-channel/create/{username}")
     public ResponseEntity<ChannelCreationResponse> createPrivateChannel(@Parameter(description = "Username of friended user", required = true) @PathVariable String username) {
         var returnDto = channelService.createPrivateChannel(username);
         return ResponseEntity.ok(returnDto);
@@ -45,16 +46,24 @@ public class ChannelController {
             @ApiResponse(responseCode = "400",
                     description = "Request not found or user is not in channel.",
                     content = @Content(schema = @Schema(implementation = ExceptionResponseModel.class)))})
-    @GetMapping("message/private-channel/{channelid}/{messageid}")
+    @GetMapping("/private-channel/message/{channelid}/{messageid}")
     public ResponseEntity<MessageInfoDto> getMessageInfo(@Parameter(description = "Channel ID", required = true) @PathVariable String channelid, @Parameter(description = "Message ID", required = true) @PathVariable String messageid) {
         var returnDto = channelService.retrieveMessageInfo(channelid, messageid);
         return ResponseEntity.ok(returnDto);
     }
 
-    @GetMapping("check/private-channel/{channelid}")
+    @GetMapping("/private-channel/check/{channelid}")
     public ResponseEntity<Void> checkIfInChannel(Principal principal, @PathVariable Long channelid){
         if(channelService.checkIfUserInChannel(principal, channelid)){
             return ResponseEntity.ok().build();
+        } else return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/private-channel")
+    public ResponseEntity<ArrayList<Object>> getPrivateChannels(Principal principal){
+        var channelDtos = channelService.getPrivateChannels(principal);
+        if(!channelDtos.isEmpty()){
+            return ResponseEntity.ok().body(channelDtos);
         } else return ResponseEntity.notFound().build();
     }
 }
