@@ -60,9 +60,6 @@ You will receive a bearer token, that you can attach to each subsequent request 
 
 The token will expire in a day by default, but that can be changed in the application.properties.
 
-## Websocket Endpoints
-The documentation for the websocket endpoints, and how to connect to a channel will be specified here, once the documentation is finished.
-
 ## Configuration
 You can configure the expiration date of the bearer tokens in the application.properties.
 
