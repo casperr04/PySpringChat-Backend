@@ -11,12 +11,6 @@ Testing - JUnit 5, Mockito
 
 Other - Project Lombok, Springdoc, Jackson
 
-## Documentation
-You can get the auto-generated json documentation on the /v3/api-docs endpoint.
-
-You can also see documentation on this page:
-https://casperr04.github.io/PySpringChat-Backend/index.html
-
 ## Getting Started
 The PySpringChat backend is a Spring Boot application built using Maven.
 
@@ -65,8 +59,6 @@ To create an user, you will have to create one using ```/v1/auth/register```
 You will receive a bearer token, that you can attach to each subsequent request to authenticate the current user.
 
 The token will expire in a day by default, but that can be changed in the application.properties.
-
-There are a couple of unauthenticated endpoints, that do not require for the user to be authenticated. Those are specified in the documentation.
 
 ## Websocket Endpoints
 The documentation for the websocket endpoints, and how to connect to a channel will be specified here, once the documentation is finished.
